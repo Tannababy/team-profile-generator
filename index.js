@@ -8,7 +8,7 @@ const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./src/page-template.js");
+const render = require("./src/page-template");
 
 const teamMembers = [];
 
@@ -49,14 +49,9 @@ function promptManager() {
       promptTeamMember(); //function call to add new team members
     })
     .catch((error) => {
-      if (error.isTtyError) {
-        // Prompt couldn't be rendered in the current environment
-      } else {
-        // Something else went wrong
-      }
+      console.error("Error in prompting manager:", error);
     });
 }
-
 // function to prompt user for team member details
 function promptTeamMember() {
   inquirer
@@ -80,7 +75,9 @@ function promptTeamMember() {
       } else if (answers.teamMemberType === "Intern") {
         promptIntern();
       }
-
+    })
+    .catch((error) => {
+      console.error("Error in prompting team member:", error);
     });
 }
 
@@ -119,52 +116,46 @@ function promptEngineer() {
       promptTeamMember();
     })
     .catch((error) => {
-      if (error.isTtyError) {
-        // Prompt couldn't be rendered in the current environment
-      } else {
-        // Something else went wrong
-      }
+      console.error("Error in prompting engineer:", error);
     });
 }
-  function promptIntern() {
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          name: "name",
-          message: "Please input intern name.",
-        },
-        {
-          type: "input",
-          name: "id",
-          message: "Please input intern id number.",
-        },
-        {
-          type: "input",
-          name: "email",
-          message: "Please input intern email.",
-        },
-        {
-          type: "input",
-          name: "school",
-          message: "Please input the name of intern school.",
-        },
-      ])
-      .then((answers) => {
-        const intern = new Intern(
-          answers.name,
-          answers.id,
-          answers.email,
-          answers.school
-        );
-        teamMembers.push(intern);
-        promptTeamMember();
-      })
-      .catch((error) => {
-        if (error.isTtyError) {
-          // Prompt couldn't be rendered in the current environment
-        } else {
-          // Something else went wrong
-        }
-      });
-  }
+function promptIntern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "Please input intern name.",
+      },
+      {
+        type: "input",
+        name: "id",
+        message: "Please input intern id number.",
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "Please input intern email.",
+      },
+      {
+        type: "input",
+        name: "school",
+        message: "Please input the name of intern school.",
+      },
+    ])
+    .then((answers) => {
+      const intern = new Intern(
+        answers.name,
+        answers.id,
+        answers.email,
+        answers.school
+      );
+      teamMembers.push(intern);
+      promptTeamMember();
+    })
+    .catch((error) => {
+      console.error("Error in prompting intern:", error);
+    });
+}
+
+promptManager();
