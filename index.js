@@ -66,6 +66,9 @@ function promptTeamMember() {
     ])
     .then((answers) => {
       if (answers.teamMemberType === "Finish building team") {
+        if (!fs.existsSync(OUTPUT_DIR)) {
+          fs.mkdirSync(OUTPUT_DIR);
+        }
         //Generate HTML and write to file
         const renderHTML = render(teamMembers);
         fs.writeFileSync("./output/team.html", renderHTML);
